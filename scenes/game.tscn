@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://c605twhll5etl"]
+
+[ext_resource type="Shader" uid="uid://keu0tbye8pqq" path="res://shaders/planet.gdshader" id="1_uwrxv"]
+[ext_resource type="NoiseTexture3D" uid="uid://prvb2sbu8761" path="res://assets/textures/3d_noise.tres" id="2_yqjtg"]
+[ext_resource type="Texture2D" uid="uid://b8pllj67x2ifm" path="res://assets/textures/planet_atlas.png" id="3_lnu2h"]
+[ext_resource type="NoiseTexture3D" uid="uid://db6yptplos4rk" path="res://assets/textures/elevation_map_3d.tres" id="3_u5sy4"]
+[ext_resource type="NoiseTexture3D" uid="uid://byu77tx8a4dyy" path="res://assets/textures/humidity_map_3d.tres" id="4_0tnpc"]
+[ext_resource type="NoiseTexture3D" uid="uid://df024ee7nig7g" path="res://assets/textures/temperature_map_3d.tres" id="4_gee14"]
+[ext_resource type="Script" uid="uid://b8pnsh2u8fwo4" path="res://scripts/planet.gd" id="6_u5sy4"]
+[ext_resource type="Script" uid="uid://dbkob1keo8qvn" path="res://scripts/camera.gd" id="8_gee14"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_371vi"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("1_uwrxv")
+shader_parameter/orbital_angle = 5.13
+shader_parameter/terrain_map = ExtResource("2_yqjtg")
+shader_parameter/elevation_map = ExtResource("3_u5sy4")
+shader_parameter/temperature_map = ExtResource("4_gee14")
+shader_parameter/humidity_map = ExtResource("4_0tnpc")
+shader_parameter/atlas = ExtResource("3_lnu2h")
+
+[sub_resource type="SphereMesh" id="SphereMesh_27j6a"]
+material = SubResource("ShaderMaterial_371vi")
+radius = 1.0
+height = 2.0
+
+[node name="Game" type="Node3D" unique_id=69394701]
+
+[node name="Planet" type="MeshInstance3D" parent="." unique_id=2012990106]
+mesh = SubResource("SphereMesh_27j6a")
+script = ExtResource("6_u5sy4")
+
+[node name="CameraHolder" type="Node3D" parent="Planet" unique_id=2079578157]
+
+[node name="Camera3D" type="Camera3D" parent="Planet/CameraHolder" unique_id=786839235]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.6293421, 0, 0)
+script = ExtResource("8_gee14")
+
+[node name="Sun" type="OmniLight3D" parent="." unique_id=1815280329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.09709, 0, 0)
+light_energy = 35.0
+omni_range = 64.226

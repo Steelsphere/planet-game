@@ -1,0 +1,9 @@
+[gd_resource type="NoiseTexture3D" format=3 uid="uid://prvb2sbu8761"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_wps7t"]
+seed = 7
+frequency = 0.02
+
+[resource]
+noise = SubResource("FastNoiseLite_wps7t")
+seamless = true

@@ -1,0 +1,14 @@
+[gd_resource type="NoiseTexture3D" format=3 uid="uid://db6yptplos4rk"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_cxo5g"]
+noise_type = 2
+seed = 4
+frequency = 0.0143
+cellular_distance_function = 1
+cellular_return_type = 4
+domain_warp_enabled = true
+domain_warp_fractal_type = 0
+
+[resource]
+noise = SubResource("FastNoiseLite_cxo5g")
+seamless = true
