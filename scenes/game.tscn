@@ -8,6 +8,9 @@
 [ext_resource type="NoiseTexture3D" uid="uid://df024ee7nig7g" path="res://assets/textures/temperature_map_3d.tres" id="4_gee14"]
 [ext_resource type="Script" uid="uid://b8pnsh2u8fwo4" path="res://scripts/planet.gd" id="6_u5sy4"]
 [ext_resource type="Script" uid="uid://dbkob1keo8qvn" path="res://scripts/camera.gd" id="8_gee14"]
+[ext_resource type="Shader" uid="uid://chaqda7th7fdv" path="res://shaders/atmosphere.gdshader" id="9_0tnpc"]
+[ext_resource type="Shader" uid="uid://c6rjku44x41rt" path="res://shaders/clouds.gdshader" id="10_kvpfn"]
+[ext_resource type="NoiseTexture3D" uid="uid://beuf2f0acfkjg" path="res://assets/textures/cloud_noise_3d.tres" id="11_dinhu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_371vi"]
 resource_local_to_scene = true
@@ -25,6 +28,29 @@ material = SubResource("ShaderMaterial_371vi")
 radius = 1.0
 height = 2.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vtaks"]
+render_priority = 0
+shader = ExtResource("9_0tnpc")
+
+[sub_resource type="SphereMesh" id="SphereMesh_d28px"]
+material = SubResource("ShaderMaterial_vtaks")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0tnpc"]
+render_priority = 0
+shader = ExtResource("10_kvpfn")
+shader_parameter/noise1 = ExtResource("11_dinhu")
+
+[sub_resource type="SphereMesh" id="SphereMesh_kvuet"]
+material = SubResource("ShaderMaterial_0tnpc")
+radius = 1.0
+height = 2.0
+
+[sub_resource type="Environment" id="Environment_27j6a"]
+ambient_light_source = 2
+ambient_light_color = Color(0.09239707, 0.09239706, 0.09239706, 1)
+
 [node name="Game" type="Node3D" unique_id=69394701]
 
 [node name="Planet" type="MeshInstance3D" parent="." unique_id=2012990106]
@@ -37,7 +63,18 @@ script = ExtResource("6_u5sy4")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.6293421, 0, 0)
 script = ExtResource("8_gee14")
 
+[node name="Atmosphere" type="MeshInstance3D" parent="Planet" unique_id=25688613]
+transform = Transform3D(1.05, 0, 0, 0, 1.05, 0, 0, 0, 1.05, 0, 0, 0)
+mesh = SubResource("SphereMesh_d28px")
+
+[node name="Clouds" type="MeshInstance3D" parent="Planet" unique_id=758455763]
+transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0)
+mesh = SubResource("SphereMesh_kvuet")
+
 [node name="Sun" type="OmniLight3D" parent="." unique_id=1815280329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.09709, 0, 0)
 light_energy = 35.0
 omni_range = 64.226
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2003457439]
+environment = SubResource("Environment_27j6a")
