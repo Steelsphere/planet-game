@@ -1,24 +1,25 @@
 [gd_scene format=3 uid="uid://c605twhll5etl"]
 
 [ext_resource type="Shader" uid="uid://keu0tbye8pqq" path="res://shaders/planet.gdshader" id="1_uwrxv"]
-[ext_resource type="NoiseTexture3D" uid="uid://prvb2sbu8761" path="res://assets/textures/3d_noise.tres" id="2_yqjtg"]
+[ext_resource type="Texture2D" uid="uid://5qr7s73cke5y" path="res://assets/textures/World_elevation_map.png" id="3_dinhu"]
 [ext_resource type="Texture2D" uid="uid://b8pllj67x2ifm" path="res://assets/textures/planet_atlas.png" id="3_lnu2h"]
-[ext_resource type="NoiseTexture3D" uid="uid://db6yptplos4rk" path="res://assets/textures/elevation_map_3d.tres" id="3_u5sy4"]
 [ext_resource type="NoiseTexture3D" uid="uid://byu77tx8a4dyy" path="res://assets/textures/humidity_map_3d.tres" id="4_0tnpc"]
 [ext_resource type="NoiseTexture3D" uid="uid://df024ee7nig7g" path="res://assets/textures/temperature_map_3d.tres" id="4_gee14"]
+[ext_resource type="Texture2D" uid="uid://hfimpffye81" path="res://assets/textures/Blue_Marble_2002.png" id="6_dinhu"]
 [ext_resource type="Script" uid="uid://b8pnsh2u8fwo4" path="res://scripts/planet.gd" id="6_u5sy4"]
 [ext_resource type="Script" uid="uid://dbkob1keo8qvn" path="res://scripts/camera.gd" id="8_gee14"]
 [ext_resource type="Shader" uid="uid://chaqda7th7fdv" path="res://shaders/atmosphere.gdshader" id="9_0tnpc"]
 [ext_resource type="Shader" uid="uid://c6rjku44x41rt" path="res://shaders/clouds.gdshader" id="10_kvpfn"]
 [ext_resource type="NoiseTexture3D" uid="uid://beuf2f0acfkjg" path="res://assets/textures/cloud_noise_3d.tres" id="11_dinhu"]
+[ext_resource type="ArrayMesh" uid="uid://b4e2s00ffw313" path="res://assets/meshes/icosphere.res" id="12_kvuet"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_371vi"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_uwrxv")
 shader_parameter/orbital_angle = 5.13
-shader_parameter/terrain_map = ExtResource("2_yqjtg")
-shader_parameter/elevation_map = ExtResource("3_u5sy4")
+shader_parameter/terrain_map = ExtResource("6_dinhu")
+shader_parameter/elevation_map = ExtResource("3_dinhu")
 shader_parameter/temperature_map = ExtResource("4_gee14")
 shader_parameter/humidity_map = ExtResource("4_0tnpc")
 shader_parameter/atlas = ExtResource("3_lnu2h")
@@ -78,3 +79,8 @@ omni_range = 64.226
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2003457439]
 environment = SubResource("Environment_27j6a")
+
+[node name="HexPlanet" type="MeshInstance3D" parent="." unique_id=1263943912]
+process_mode = 4
+visible = false
+mesh = ExtResource("12_kvuet")
