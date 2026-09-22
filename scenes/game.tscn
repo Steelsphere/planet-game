@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://5qr7s73cke5y" path="res://assets/textures/World_elevation_map.png" id="3_dinhu"]
 [ext_resource type="Texture2D" uid="uid://b8pllj67x2ifm" path="res://assets/textures/planet_atlas.png" id="3_lnu2h"]
 [ext_resource type="NoiseTexture3D" uid="uid://byu77tx8a4dyy" path="res://assets/textures/humidity_map_3d.tres" id="4_0tnpc"]
-[ext_resource type="NoiseTexture3D" uid="uid://df024ee7nig7g" path="res://assets/textures/temperature_map_3d.tres" id="4_gee14"]
 [ext_resource type="Texture2D" uid="uid://hfimpffye81" path="res://assets/textures/Blue_Marble_2002.png" id="6_dinhu"]
 [ext_resource type="Script" uid="uid://b8pnsh2u8fwo4" path="res://scripts/planet.gd" id="6_u5sy4"]
 [ext_resource type="Script" uid="uid://dbkob1keo8qvn" path="res://scripts/camera.gd" id="8_gee14"]
@@ -12,6 +11,10 @@
 [ext_resource type="Shader" uid="uid://c6rjku44x41rt" path="res://shaders/clouds.gdshader" id="10_kvpfn"]
 [ext_resource type="NoiseTexture3D" uid="uid://beuf2f0acfkjg" path="res://assets/textures/cloud_noise_3d.tres" id="11_dinhu"]
 [ext_resource type="ArrayMesh" uid="uid://b4e2s00ffw313" path="res://assets/meshes/icosphere.res" id="12_kvuet"]
+[ext_resource type="Shader" uid="uid://bgqrui41xliq6" path="res://shaders/temperature.gdshader" id="12_trtic"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_dinhu"]
+viewport_path = NodePath("Planet/Temperature")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_371vi"]
 resource_local_to_scene = true
@@ -20,11 +23,12 @@ shader = ExtResource("1_uwrxv")
 shader_parameter/orbital_angle = 5.13
 shader_parameter/terrain_map = ExtResource("6_dinhu")
 shader_parameter/elevation_map = ExtResource("3_dinhu")
-shader_parameter/temperature_map = ExtResource("4_gee14")
+shader_parameter/temperature_map = SubResource("ViewportTexture_dinhu")
 shader_parameter/humidity_map = ExtResource("4_0tnpc")
 shader_parameter/atlas = ExtResource("3_lnu2h")
 
 [sub_resource type="SphereMesh" id="SphereMesh_27j6a"]
+resource_local_to_scene = true
 material = SubResource("ShaderMaterial_371vi")
 radius = 1.0
 height = 2.0
@@ -48,9 +52,25 @@ material = SubResource("ShaderMaterial_0tnpc")
 radius = 1.0
 height = 2.0
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_d28px"]
+viewport_path = NodePath("Planet/Temperature")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_kvuet"]
+viewport_path = NodePath("Planet/Temperature2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_27j6a"]
+resource_local_to_scene = true
+shader = ExtResource("12_trtic")
+shader_parameter/prev_texture = SubResource("ViewportTexture_kvuet")
+shader_parameter/elevation_map = ExtResource("3_dinhu")
+shader_parameter/terrain_map = ExtResource("6_dinhu")
+
 [sub_resource type="Environment" id="Environment_27j6a"]
 ambient_light_source = 2
 ambient_light_color = Color(0.09239707, 0.09239706, 0.09239706, 1)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_27j6a"]
+viewport_path = NodePath("Planet/Temperature2")
 
 [node name="Game" type="Node3D" unique_id=69394701]
 
@@ -72,6 +92,34 @@ mesh = SubResource("SphereMesh_d28px")
 transform = Transform3D(1.025, 0, 0, 0, 1.025, 0, 0, 0, 1.025, 0, 0, 0)
 mesh = SubResource("SphereMesh_kvuet")
 
+[node name="Temperature2" type="SubViewport" parent="Planet" unique_id=1298222392]
+disable_3d = true
+size = Vector2i(128, 64)
+render_target_clear_mode = 1
+render_target_update_mode = 0
+
+[node name="TemperatureMap2" type="TextureRect" parent="Planet/Temperature2" unique_id=311806305]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_d28px")
+
+[node name="Temperature" type="SubViewport" parent="Planet" unique_id=1021058578]
+disable_3d = true
+size = Vector2i(128, 64)
+render_target_clear_mode = 1
+render_target_update_mode = 0
+
+[node name="TemperatureMap" type="ColorRect" parent="Planet/Temperature" unique_id=1002200206]
+material = SubResource("ShaderMaterial_27j6a")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="Sun" type="OmniLight3D" parent="." unique_id=1815280329]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.09709, 0, 0)
 light_energy = 35.0
@@ -84,3 +132,10 @@ environment = SubResource("Environment_27j6a")
 process_mode = 4
 visible = false
 mesh = ExtResource("12_kvuet")
+
+[node name="GUI" type="CanvasLayer" parent="." unique_id=650011916]
+
+[node name="TextureRect" type="TextureRect" parent="GUI" unique_id=363212310]
+offset_right = 352.0
+offset_bottom = 176.0
+texture = SubResource("ViewportTexture_27j6a")

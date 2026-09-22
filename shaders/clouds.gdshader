@@ -1,6 +1,6 @@
 shader_type spatial;
 
-uniform sampler3D noise1: repeat_enable;
+uniform sampler3D noise1: repeat_enable, filter_nearest;
 uniform sampler3D noise2;
 
 varying vec3 local_pos;

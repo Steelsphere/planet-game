@@ -4,7 +4,7 @@ void fragment() {
 	ALBEDO = vec3(0.3, 0.7, 1.0);
 	
 	float atmosphere = 1.0 - dot(NORMAL, VIEW);
-	ALPHA = pow(atmosphere, 3.0);
+	ALPHA = smoothstep(1.0, 0.5, atmosphere) * smoothstep(0.5, 0.8, atmosphere);
 }
 
 void light() {

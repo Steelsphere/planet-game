@@ -4,7 +4,7 @@ uniform float orbital_angle;
 
 uniform sampler2D terrain_map: filter_nearest;
 uniform sampler2D elevation_map: filter_nearest;
-uniform sampler3D temperature_map;
+uniform sampler2D temperature_map;
 uniform sampler3D humidity_map;
 uniform sampler2D atlas: filter_nearest;
 
@@ -65,10 +65,11 @@ void fragment() {
 	float elevation = texture(elevation_map, UV).r;
 	float humidity = texture(humidity_map, local_pos).r;
 	
-	float temp_variation = (texture(temperature_map, local_pos + vec3(0.0, TIME/20.0, 0.0)).r - 0.5) * 0.5;
-	float ocean_temp_variation = (texture(temperature_map, local_pos + vec3(0.0, TIME/50.0, 0.0)).r - 0.5) * 0.2;
-	float temperature = (1.0 - abs(local_pos.y + sin(TIME/2.0) * 0.25) * 1.1) + temp_variation - elevation * 0.1;
-	float ocean_temperature = (0.9 - abs(local_pos.y + sin(TIME/2.0 - 1.0) * 0.05) * 0.9) + ocean_temp_variation;
+	//float temp_variation = (texture(temperature_map, local_pos + vec3(0.0, TIME/20.0, 0.0)).r - 0.5) * 0.5;
+	//float ocean_temp_variation = (texture(temperature_map, local_pos + vec3(0.0, TIME/50.0, 0.0)).r - 0.5) * 0.2;
+	//float temperature = (1.0 - abs(local_pos.y + sin(TIME/2.0) * 0.25) * 1.1) + temp_variation - elevation * 0.1;
+	//float ocean_temperature = (0.9 - abs(local_pos.y + sin(TIME/2.0 - 1.0) * 0.05) * 0.9) + ocean_temp_variation;
+	float temp = texture(temperature_map, UV).r;
 	
 	vec2 cubemap_uv = cubemap_uv();
 	vec2 grid_pos = floor(cubemap_uv * tiling);
@@ -93,7 +94,7 @@ void fragment() {
 		terrain_color = mix(terrain_color, snowy_mountains, smoothstep(0.8, 1.0, elevation));
 		
 		// Ice
-		terrain_color = mix(terrain_color, snow, smoothstep(0.2, 0.1, temperature));
+		terrain_color = mix(terrain_color, snow, smoothstep(0.2, 0.1, temp));
 		
 		//terrain_color = mix(vec3(0.0), terrain_color, min(1.0, elevation * 4.0));
 		
@@ -105,7 +106,7 @@ void fragment() {
 		//ocean = mix(vec3(0.1, 0.3, 0.5), ocean, elevation * 2.0);
 		vec3 ice = get_texture(vec2(64.0, 0.0), cubemap_uv, tile_id, 0);
 		
-		ocean_color = mix(ocean, ice, smoothstep(0.1, 0.05, ocean_temperature));
+		ocean_color = mix(ocean, ice, smoothstep(0.1, 0.05, temp));
 		
 		if (terrain == 0.0) {
 			ocean_color = vec3(0.0);
@@ -117,7 +118,14 @@ void fragment() {
 	vec3 color = vec3(0.0);
 	color = mix(terrain_color, ocean_color, smoothstep(0.3, 0.0, terrain));
 	//ROUGHNESS = mix(0.35, 1.0, smoothstep(0.0, 0.1, elevation));
-	ALBEDO = color;
+	//ALBEDO = color;
+	
+	vec3 temp_color = mix(vec3(0.0, 0.0, 1.0), vec3(0.4, 0.7, 1.0), smoothstep(0.0, 0.25, temp));
+    temp_color = mix(temp_color, vec3(0.0, 1.0, 0.0), smoothstep(0.25, 0.5, temp));
+    temp_color = mix(temp_color, vec3(1.0, 1.0, 0.0), smoothstep(0.5, 0.75, temp));
+    temp_color = mix(temp_color, vec3(1.0, 0.0, 0.0), smoothstep(0.75, 1.0, temp));
+	
+	ALBEDO = mix(temp_color, color, 0.5);
 	
 	//ALBEDO = texture(temperature_map, UV).rgb;
 	//ALBEDO = vec3(temperature);
