@@ -10,8 +10,10 @@
 [ext_resource type="Shader" uid="uid://chaqda7th7fdv" path="res://shaders/atmosphere.gdshader" id="9_0tnpc"]
 [ext_resource type="Shader" uid="uid://c6rjku44x41rt" path="res://shaders/clouds.gdshader" id="10_kvpfn"]
 [ext_resource type="NoiseTexture3D" uid="uid://beuf2f0acfkjg" path="res://assets/textures/cloud_noise_3d.tres" id="11_dinhu"]
+[ext_resource type="Texture2D" uid="uid://cv0ma704enxn5" path="res://assets/textures/avg_temp_map.png" id="12_ir15t"]
 [ext_resource type="ArrayMesh" uid="uid://b4e2s00ffw313" path="res://assets/meshes/icosphere.res" id="12_kvuet"]
 [ext_resource type="Shader" uid="uid://bgqrui41xliq6" path="res://shaders/temperature.gdshader" id="12_trtic"]
+[ext_resource type="Texture2D" uid="uid://d3y5gk657lunf" path="res://assets/textures/avg_temp_sea_map_rescaled.png" id="13_ca42v"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_dinhu"]
 viewport_path = NodePath("Planet/Temperature")
@@ -64,10 +66,13 @@ shader = ExtResource("12_trtic")
 shader_parameter/prev_texture = SubResource("ViewportTexture_kvuet")
 shader_parameter/elevation_map = ExtResource("3_dinhu")
 shader_parameter/terrain_map = ExtResource("6_dinhu")
+shader_parameter/avg_temp_land = ExtResource("12_ir15t")
+shader_parameter/avg_temp_sea = ExtResource("13_ca42v")
+shader_parameter/sun_dir = Vector3(0, 0, 0)
 
 [sub_resource type="Environment" id="Environment_27j6a"]
 ambient_light_source = 2
-ambient_light_color = Color(0.09239707, 0.09239706, 0.09239706, 1)
+ambient_light_color = Color(0.5370113, 0.5370113, 0.5370113, 1)
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_27j6a"]
 viewport_path = NodePath("Planet/Temperature2")

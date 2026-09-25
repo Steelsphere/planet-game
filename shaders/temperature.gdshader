@@ -8,36 +8,56 @@ const float albedo_strength = 0.25;
 uniform sampler2D prev_texture;
 uniform sampler2D elevation_map;
 uniform sampler2D terrain_map;
+uniform sampler2D avg_temp_land;
+uniform sampler2D avg_temp_sea;
+uniform vec3 sun_dir;
 
 void fragment() {
-    vec2 angle = vec2(UV.x * 2.0 * 3.14159, UV.y * 3.14159);
-    
-    float x = sin(angle.y) * cos(angle.x);
-    float y = -cos(angle.y);
-    float z = sin(angle.y) * sin(angle.x);
-
-    vec3 sphere_coords = normalize(vec3(x, y, z));
-
-    vec3 sun_dir = vec3(cos(TIME), sin(TIME * 0.1) * 0.25, sin(TIME));
-    float irradiance = max(0.0, dot(sphere_coords, sun_dir) * sun_strength);
-    //float snow = texture(iChannel1, uv).r;
-
-    // Albedo
-    //irradiance *= 1.0 - snow * albedo_strength;
-
-	float terrain = texture(terrain_map, UV).r;
-	float elevation = max(0.0, texture(elevation_map, UV).r - 0.5) * 2.0;
-    float temp = texture(prev_texture, UV).r;
-	float thermal_response = 1.0;
+    float terrain = texture(terrain_map, UV).r;
 	
-	if (terrain < 0.1) {
-		thermal_response = 0.5;
+	if (TIME < 0.1) {
+		if (terrain < 0.1) {
+			COLOR = texture(avg_temp_sea, UV);
+		}
+		else {
+			COLOR = texture(avg_temp_land, UV);
+		}
 	}
-	
-	temp += irradiance * 0.0125 * (1.0 - elevation * 0.5);
-	temp -= 0.002;
-	
-    vec3 col = vec3(temp);
-    
-    COLOR = vec4(col,1.0);
+	else {
+		vec2 angle = vec2(UV.x * 2.0 * 3.14159, UV.y * 3.14159);
+	    
+	    float x = sin(angle.y) * cos(angle.x);
+	    float y = -cos(angle.y);
+	    float z = sin(angle.y) * sin(angle.x);
+
+	    vec3 sphere_coords = normalize(vec3(x, y, z));
+
+	    //vec3 sun_dir = vec3(cos(TIME), sin(TIME * 0.1) * 0.25, sin(TIME));
+	    float irradiance = max(0.0, dot(sphere_coords, sun_dir) * sun_strength);
+	    //float snow = texture(iChannel1, uv).r;
+
+	    // Albedo
+	    //irradiance *= 1.0 - snow * albedo_strength;
+
+		float elevation = max(0.0, texture(elevation_map, UV).r - 0.5) * 2.0;
+	    float temp = texture(prev_texture, UV).r;
+		float heating_rate = 0.0;
+		float thermal_response = 1.0;
+		
+		if (terrain < 0.1) {
+			thermal_response = 0.5;
+			heating_rate = max(0.1, texture(avg_temp_sea, UV).r);
+		}
+		else {
+			heating_rate = texture(avg_temp_land, UV).r + 1.0;
+		}
+		
+		//temp += irradiance * 0.0125 * (1.0 - elevation * 0.5);
+		temp += irradiance * 0.005 * heating_rate * thermal_response;
+		temp -= 0.002;
+		
+	    vec3 col = vec3(temp);
+	    
+	    COLOR = vec4(col,1.0);
+	}
 }
